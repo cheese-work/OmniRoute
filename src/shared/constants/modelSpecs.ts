@@ -79,6 +79,26 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsVision: true,
   },
 
+  // ── Claude Opus 4.6 ─────────────────────────────────────────────
+  "claude-opus-4-6": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["claude-opus-4.6"],
+  },
+
+  // ── Claude Sonnet 4.6 ────────────────────────────────────────────
+  "claude-sonnet-4-6": {
+    maxOutputTokens: 64000,
+    contextWindow: 1000000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["claude-sonnet-4.6"],
+  },
+
   // ── Claude Opus 4.7 ─────────────────────────────────────────────
   "claude-opus-4-7": {
     maxOutputTokens: 128000,

@@ -219,6 +219,15 @@ function getWildcardRegex(pattern: string): RegExp {
   return regex;
 }
 
+function normalizeOneMillionModelSuffix(modelId: string): string {
+  return modelId.replace(/\s*\[1m\]\s*$/i, "");
+}
+
+function uniqueModelPermissionCandidates(modelId: string): string[] {
+  const normalized = normalizeOneMillionModelSuffix(modelId);
+  return normalized === modelId ? [modelId] : [normalized, modelId];
+}
+
 function ensureApiKeyColumn(
   db: ApiKeysDbLike,
   columnNames: Set<string>,
@@ -402,13 +411,11 @@ function parseRateLimits(value: unknown): RateLimitRule[] | null {
   try {
     const parsed = JSON.parse(value);
     if (!Array.isArray(parsed)) return null;
-    return parsed.filter(
-      (rule: any) =>
-        typeof rule === "object" &&
-        rule !== null &&
-        typeof rule.limit === "number" &&
-        typeof rule.window === "number"
-    ) as RateLimitRule[];
+    return parsed.filter((rule): rule is RateLimitRule => {
+      if (typeof rule !== "object" || rule === null) return false;
+      const candidate = rule as Record<string, unknown>;
+      return typeof candidate.limit === "number" && typeof candidate.window === "number";
+    });
   } catch {
     return null;
   }
@@ -1023,8 +1030,10 @@ export async function isModelAllowedForKey(
   if (!key) return true;
   if (!modelId) return false;
 
+  const modelCandidates = uniqueModelPermissionCandidates(modelId);
+
   // Create cache key
-  const cacheKey = `${key}:${modelId}`;
+  const cacheKey = `${key}:${modelCandidates.join("|")}`;
   const now = Date.now();
 
   // Check permission cache
@@ -1049,25 +1058,28 @@ export async function isModelAllowedForKey(
   // Check if model matches each allowed pattern
   // Support exact match and prefix match (e.g., "openai/*" allows all OpenAI models)
   for (const pattern of allowedModels) {
-    if (pattern === modelId) {
-      allowed = true;
-      break;
-    }
-    if (pattern.endsWith("/*")) {
-      const prefix = pattern.slice(0, -2); // Remove "/*"
-      if (modelId.startsWith(prefix + "/") || modelId.startsWith(prefix)) {
+    for (const candidate of modelCandidates) {
+      if (pattern === candidate) {
         allowed = true;
         break;
       }
-    }
-    // Support wildcard patterns using cached regex
-    if (pattern.includes("*")) {
-      const regex = getWildcardRegex(pattern);
-      if (regex.test(modelId)) {
-        allowed = true;
-        break;
+      if (pattern.endsWith("/*")) {
+        const prefix = pattern.slice(0, -2); // Remove "/*"
+        if (candidate.startsWith(prefix + "/")) {
+          allowed = true;
+          break;
+        }
+      }
+      // Support wildcard patterns using cached regex
+      if (pattern.includes("*")) {
+        const regex = getWildcardRegex(pattern);
+        if (regex.test(candidate)) {
+          allowed = true;
+          break;
+        }
       }
     }
+    if (allowed) break;
   }
 
   // Cache the result

@@ -242,11 +242,17 @@ test("v1 models catalog exposes claude alias and provider-prefixed built-in mode
   const body = (await response.json()) as any;
   const aliasModel = body.data.find((item) => item.id === "cc/claude-sonnet-4-6");
   const providerModel = body.data.find((item) => item.id === "claude/claude-sonnet-4-6");
+  const opusModel = body.data.find((item) => item.id === "cc/claude-opus-4-6");
 
   assert.equal(response.status, 200);
   assert.ok(aliasModel);
   assert.ok(providerModel);
+  assert.ok(opusModel);
   assert.equal(providerModel.parent, aliasModel.id);
+  assert.equal(aliasModel.context_length, 1000000);
+  assert.equal(aliasModel.max_output_tokens, 64000);
+  assert.equal(opusModel.context_length, 1000000);
+  assert.equal(opusModel.max_output_tokens, 128000);
   assert.equal(aliasModel.capabilities?.vision, true);
   assert.deepEqual(aliasModel.input_modalities, ["text", "image"]);
   assert.deepEqual(aliasModel.output_modalities, ["text"]);

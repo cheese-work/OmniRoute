@@ -453,7 +453,7 @@ export class AntigravityExecutor extends BaseExecutor {
         return { ...c, role, parts };
       }) || [];
 
-    const contents: any[] = [];
+    const contents: typeof normalizedContents = [];
     for (const c of normalizedContents) {
       if (!Array.isArray(c.parts) || c.parts.length === 0) continue;
       if (contents.length > 0 && contents[contents.length - 1].role === c.role) {
@@ -802,7 +802,7 @@ export class AntigravityExecutor extends BaseExecutor {
         let response = await fetch(url, {
           method: "POST",
           headers: finalHeaders,
-          body: getChunkedOrFixedBody(serializedRequest.bodyString, stream) as any,
+          body: getChunkedOrFixedBody(serializedRequest.bodyString, stream) as BodyInit,
           ...(stream ? { duplex: "half" } : {}),
           signal,
         });
@@ -814,7 +814,7 @@ export class AntigravityExecutor extends BaseExecutor {
           response = await fetch(url, {
             method: "POST",
             headers: retryHeaders,
-            body: getChunkedOrFixedBody(serializedRequest.bodyString, stream) as any,
+            body: getChunkedOrFixedBody(serializedRequest.bodyString, stream) as BodyInit,
             ...(stream ? { duplex: "half" } : {}),
             signal,
           });
@@ -884,7 +884,10 @@ export class AntigravityExecutor extends BaseExecutor {
                   const creditsResp = await fetch(url, {
                     method: "POST",
                     headers: finalCreditsHeaders,
-                    body: getChunkedOrFixedBody(serializedCreditsRequest.bodyString, stream) as any,
+                    body: getChunkedOrFixedBody(
+                      serializedCreditsRequest.bodyString,
+                      stream
+                    ) as BodyInit,
                     ...(stream ? { duplex: "half" } : {}),
                     signal,
                   });
