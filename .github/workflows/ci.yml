@@ -134,7 +134,7 @@ jobs:
 
   electron-package-smoke:
     name: Electron Package Smoke
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 25
     needs: build
     env:
@@ -233,7 +233,7 @@ jobs:
 
   test-coverage:
     name: Coverage
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 30
     needs: build
     env:
@@ -389,7 +389,7 @@ jobs:
 
   test-e2e:
     name: E2E Tests (${{ matrix.shard }}/6)
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 20
     needs: build
     strategy:
