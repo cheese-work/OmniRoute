@@ -104,7 +104,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -117,7 +117,7 @@ jobs:
 
   package-artifact:
     name: Package Artifact
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: build
     env:
       JWT_SECRET: ci-build-secret-with-sufficient-length-for-validation
@@ -185,7 +185,7 @@ jobs:
 
   node-24-compat:
     name: Node 24 Compatibility (${{ matrix.shard }}/2)
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
     needs: build
     strategy:
@@ -209,7 +209,7 @@ jobs:
 
   node-26-compat:
     name: Node 26 Compatibility (${{ matrix.shard }}/2)
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
     needs: build
     strategy:
@@ -415,7 +415,7 @@ jobs:
 
   test-integration:
     name: Integration Tests (${{ matrix.shard }}/2)
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 15
     needs: build
     strategy:
