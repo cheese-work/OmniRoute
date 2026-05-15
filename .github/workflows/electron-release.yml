@@ -52,10 +52,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: windows
-            runner: windows-latest
-            target: win
-            ext: .exe
           - platform: macos-intel
             runner: macos-15-intel
             target: mac-x64
