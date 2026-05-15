@@ -65,7 +65,7 @@ jobs:
             target: mac-arm64
             ext: -arm64.dmg
           - platform: linux
-            runner: ubuntu-latest
+            runner: blacksmith-4vcpu-ubuntu-2404
             target: linux
             ext: .AppImage
             deb_ext: .deb
