@@ -439,6 +439,9 @@ test("enforceApiKeyPolicy rejects disallowed models and exhausted budgets", asyn
   const restrictedKey = await createKeyWithPolicy({
     allowedModels: ["openai/gpt-4.1"],
   });
+  const oneMillionKey = await createKeyWithPolicy({
+    allowedModels: ["cc/claude-sonnet-4-6"],
+  });
   const budgetedKey = await createKeyWithPolicy();
   const policy = await loadPolicy("model-and-budget");
 
@@ -448,6 +451,22 @@ test("enforceApiKeyPolicy rejects disallowed models and exhausted budgets", asyn
   );
   assert.equal(disallowed.rejection.status, 403);
   assert.match(await readErrorMessage(disallowed.rejection), /not allowed/);
+
+  const normalizedOneMillion = await policy.enforceApiKeyPolicy(
+    makePolicyRequest(oneMillionKey.key),
+    "cc/claude-sonnet-4-6  [1M]"
+  );
+  assert.equal(normalizedOneMillion.rejection, null);
+
+  // A key whose policy stores the literal [1M] suffix should not allow the plain model ID
+  const literalSuffixKey = await createKeyWithPolicy({
+    allowedModels: ["cc/claude-sonnet-4-6 [1M]"],
+  });
+  const withoutSuffix = await policy.enforceApiKeyPolicy(
+    makePolicyRequest(literalSuffixKey.key),
+    "cc/claude-sonnet-4-6"
+  );
+  assert.notEqual(withoutSuffix.rejection, null);
 
   const budgetMeta = await apiKeysDb.getApiKeyMetadata(budgetedKey.key);
   costRules.setBudget(budgetMeta.id, { dailyLimitUsd: 1, warningThreshold: 0.5 });
