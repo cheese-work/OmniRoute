@@ -650,7 +650,7 @@ export const REGISTRY: Record<string, RegistryEntry> = {
         id: "claude-sonnet-4-6",
         name: "Claude 4.6 Sonnet",
         supportsXHighEffort: false,
-        contextLength: 200000,
+        contextLength: 1000000,
         maxOutputTokens: 64000,
       },
       {
@@ -1286,15 +1286,15 @@ export const REGISTRY: Record<string, RegistryEntry> = {
         id: "claude-opus-4-6",
         name: "Claude Opus 4.6 (CC)",
         supportsReasoning: true,
-        contextLength: 200000,
-        maxOutputTokens: 32000,
+        contextLength: 1000000,
+        maxOutputTokens: 128000,
       },
       {
         id: "claude-sonnet-4-6",
         name: "Claude Sonnet 4.6 (CC)",
         supportsReasoning: true,
-        contextLength: 200000,
-        maxOutputTokens: 16384,
+        contextLength: 1000000,
+        maxOutputTokens: 64000,
       },
       {
         id: "claude-haiku-4-5-20251001",

@@ -539,7 +539,14 @@ type ModelLockoutInfo = {
  */
 export function getAllModelLockouts(): ModelLockoutInfo[] {
   const now = Date.now();
-  const active: ModelLockoutInfo[] = [];
+  const active: {
+    provider: string;
+    connectionId: string;
+    model: string;
+    reason: string;
+    remainingMs: number;
+    failureCount: number;
+  }[] = [];
   for (const key of modelLockouts.keys()) {
     cleanupModelLockKey(key, now);
   }
