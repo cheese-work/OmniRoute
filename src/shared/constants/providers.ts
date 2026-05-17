@@ -11,7 +11,7 @@ export const FREE_PROVIDERS = {
     color: "#10B981",
     deprecated: true,
     deprecationReason:
-      "Qwen OAuth free tier was discontinued on 2026-04-15. Use 'alicode', 'alicode-intl', or 'openrouter' provider with API key instead.",
+      "Qwen OAuth free tier was discontinued on 2026-04-15. Use 'bailian-coding-plan', 'alibaba', 'alibaba-cn', or 'openrouter' provider with API key instead.",
   },
   "gemini-cli": {
     id: "gemini-cli",
@@ -33,6 +33,22 @@ export const FREE_PROVIDERS = {
     website: "https://aws.amazon.com/q/developer/",
     authHint:
       "Uses the same AWS Builder ID or imported refresh-token flow as Kiro, but keeps Amazon Q connections separate.",
+  },
+  opencode: {
+    id: "opencode",
+    alias: "oc",
+    name: "OpenCode Free",
+    icon: "terminal",
+    color: "#E87040",
+    textIcon: "OC",
+    website: "https://opencode.ai",
+    noAuth: true,
+    authHint: "No API key required — uses OpenCode's public free endpoint.",
+    freeNote:
+      "No API key required — public OpenCode endpoint with Kimi, GLM, Qwen, MiMo, MiniMax models.",
+    notice: {
+      text: "OpenCode Free uses the public OpenCode endpoint (https://opencode.ai/zen/v1). No signup or API key needed. Rate limits apply.",
+    },
   },
 };
 
@@ -90,6 +106,28 @@ export const OAUTH_PROVIDERS = {
     color: "#5B9BD5",
     textIcon: "CL",
   },
+  windsurf: {
+    id: "windsurf",
+    alias: "ws",
+    name: "Windsurf (Devin CLI)",
+    icon: "air",
+    color: "#00C5A0",
+    textIcon: "WS",
+    authHint:
+      "Sign in at windsurf.com to get your token. Visit windsurf.com/show-auth-token after logging in and paste it here, or use the device-code login flow.",
+    website: "https://windsurf.com",
+  },
+  "devin-cli": {
+    id: "devin-cli",
+    alias: "dv",
+    name: "Devin CLI (Official)",
+    icon: "terminal",
+    color: "#6366F1",
+    textIcon: "DV",
+    authHint:
+      "Requires the Devin CLI binary. Run `devin auth login` to authenticate, or provide your WINDSURF_API_KEY. Install: https://cli.devin.ai",
+    website: "https://cli.devin.ai",
+  },
 };
 
 // Web / Cookie Providers
@@ -145,6 +183,16 @@ export const WEB_COOKIE_PROVIDERS = {
     website: "https://www.meta.ai",
     authHint: "Paste your abra_sess value or full cookie header from meta.ai",
   },
+  "deepseek-web": {
+    id: "deepseek-web",
+    alias: "ds-web",
+    name: "DeepSeek Web",
+    icon: "auto_awesome",
+    color: "#4D6BFE",
+    textIcon: "DS",
+    website: "https://chat.deepseek.com",
+    authHint: "Paste your ds_session_id cookie from chat.deepseek.com",
+  },
 };
 
 // API Key Providers
@@ -161,6 +209,18 @@ export const APIKEY_PROVIDERS = {
     hasFree: true,
     freeNote: "$200 free credits on signup - multi-model routing gateway",
     apiHint: "Get $200 free credits at https://agentrouter.org/register — no credit card required.",
+  },
+  "command-code": {
+    id: "command-code",
+    alias: "cmd",
+    name: "Command Code",
+    icon: "terminal",
+    color: "#111827",
+    textIcon: "CC",
+    website: "https://commandcode.ai/",
+    authHint:
+      "Use a Command Code API key. Requests are sent to Command Code's /alpha/generate endpoint.",
+    apiHint: "Create or copy an API key from Command Code, then paste it here as a Bearer token.",
   },
   openrouter: {
     id: "openrouter",
@@ -266,24 +326,6 @@ export const APIKEY_PROVIDERS = {
     color: "#0EA5E9",
     textIcon: "CR",
     website: "https://crof.ai",
-  },
-  alicode: {
-    id: "alicode",
-    alias: "alicode",
-    name: "Alibaba",
-    icon: "cloud",
-    color: "#FF6A00",
-    textIcon: "ALi",
-    website: "https://bailian.console.aliyun.com",
-  },
-  "alicode-intl": {
-    id: "alicode-intl",
-    alias: "alicode-intl",
-    name: "Alibaba Intl",
-    icon: "cloud",
-    color: "#FF6A00",
-    textIcon: "ALi",
-    website: "https://modelstudio.console.alibabacloud.com",
   },
   openai: {
     id: "openai",
@@ -766,11 +808,21 @@ export const APIKEY_PROVIDERS = {
   alibaba: {
     id: "alibaba",
     alias: "ali",
-    name: "Alibaba Cloud (DashScope)",
+    name: "Alibaba",
     icon: "cloud_queue",
     color: "#FF6600",
     textIcon: "AL",
     website: "https://dashscope-intl.aliyuncs.com",
+    hasFree: false,
+  },
+  "alibaba-cn": {
+    id: "alibaba-cn",
+    alias: "ali-cn",
+    name: "Alibaba (China)",
+    icon: "cloud_queue",
+    color: "#FF6600",
+    textIcon: "AL",
+    website: "https://dashscope.aliyuncs.com",
     hasFree: false,
   },
   longcat: {
@@ -793,8 +845,9 @@ export const APIKEY_PROVIDERS = {
     color: "#4CAF50",
     textIcon: "PO",
     website: "https://pollinations.ai",
-    hasFree: false,
-    freeNote: "API key required. Spore tier: ~0.01 pollen/hour ($0.01/hr).",
+    hasFree: true,
+    freeNote:
+      "No API key required for free public endpoint. Optional Spore tier: ~0.01 pollen/hour.",
   },
   puter: {
     id: "puter",
@@ -975,6 +1028,8 @@ export const APIKEY_PROVIDERS = {
     color: "#EA580C",
     textIcon: "FL",
     website: "https://featherless.ai",
+    hasFree: true,
+    freeNote: "Free tier available — no credit card required",
   },
   llm7: {
     id: "llm7",
@@ -1020,6 +1075,8 @@ export const APIKEY_PROVIDERS = {
     color: "#EC4899",
     textIcon: "FR",
     website: "https://friendli.ai",
+    hasFree: true,
+    freeNote: "Free tier for serverless inference — no credit card required",
   },
   llamagate: {
     id: "llamagate",
@@ -1176,6 +1233,30 @@ export const APIKEY_PROVIDERS = {
     color: "#EA580C",
     textIcon: "MM",
     website: "https://mimo.mi.com",
+  },
+  gitlawb: {
+    id: "gitlawb",
+    alias: "glb",
+    name: "Gitlawb Opengateway (MiMo)",
+    icon: "hub",
+    color: "#10B981",
+    textIcon: "GLB",
+    website: "https://opengateway.gitlawb.com",
+    hasFree: true,
+    freeNote: "Free tier available — no credit card required",
+    apiHint: "Get your API key from Gitlawb Opengateway dashboard.",
+  },
+  "gitlawb-gmi": {
+    id: "gitlawb-gmi",
+    alias: "glb-gmi",
+    name: "Gitlawb Opengateway (GMI Cloud)",
+    icon: "hub",
+    color: "#10B981",
+    textIcon: "GMI",
+    website: "https://opengateway.gitlawb.com",
+    hasFree: true,
+    freeNote: "Free tier available — no credit card required",
+    apiHint: "Get your API key from Gitlawb Opengateway dashboard.",
   },
   "inference-net": {
     id: "inference-net",
@@ -1393,6 +1474,8 @@ export const APIKEY_PROVIDERS = {
     color: "#06B6D4",
     textIcon: "CH",
     website: "https://chutes.ai",
+    hasFree: true,
+    freeNote: "Free tier available — no credit card required",
     authHint: "Bearer API key for the Chutes OpenAI-compatible gateway.",
     passthroughModels: true,
   },
@@ -1753,6 +1836,16 @@ export const SEARCH_PROVIDERS = {
     authHint:
       "API key is optional. Set your SearXNG base URL. Some instances may require a bearer token for access.",
   },
+  "ollama-search": {
+    id: "ollama-search",
+    alias: "ollama-search",
+    name: "Ollama Search",
+    icon: "search",
+    color: "#58A6FF",
+    textIcon: "OS",
+    website: "https://ollama.com/settings/api-keys",
+    authHint: "Same API key as Ollama Cloud (from ollama.com/settings/api-keys)",
+  },
 };
 
 // Audio Only Providers
@@ -1854,6 +1947,39 @@ export const UPSTREAM_PROXY_PROVIDERS = {
   },
 };
 
+export const CLOUD_AGENT_PROVIDERS = {
+  jules: {
+    id: "jules",
+    alias: "jules",
+    name: "Google Jules",
+    icon: "engineering",
+    color: "#4285F4",
+    textIcon: "JL",
+    website: "https://jules.google",
+    authHint: "Jules API key for creating and managing cloud coding tasks.",
+  },
+  devin: {
+    id: "devin",
+    alias: "devin",
+    name: "Devin",
+    icon: "smart_toy",
+    color: "#111827",
+    textIcon: "DV",
+    website: "https://devin.ai",
+    authHint: "Devin API key for cloud agent sessions.",
+  },
+  "codex-cloud": {
+    id: "codex-cloud",
+    alias: "codex-cloud",
+    name: "Codex Cloud",
+    icon: "cloud",
+    color: "#10A37F",
+    textIcon: "CC",
+    website: "https://openai.com/codex",
+    authHint: "OpenAI API key with Codex Cloud task access.",
+  },
+};
+
 export function isClaudeCodeCompatibleProvider(providerId: unknown): providerId is string {
   return typeof providerId === "string" && providerId.startsWith(CLAUDE_CODE_COMPATIBLE_PREFIX);
 }
@@ -1880,6 +2006,32 @@ export function isSelfHostedChatProvider(providerId: unknown): boolean {
   return typeof providerId === "string" && SELF_HOSTED_CHAT_PROVIDER_IDS.has(providerId);
 }
 
+export function providerAllowsOptionalApiKey(providerId: unknown): boolean {
+  return (
+    providerId === "searxng-search" ||
+    providerId === "petals" ||
+    providerId === "pollinations" ||
+    isLocalProvider(providerId) ||
+    isSelfHostedChatProvider(providerId) ||
+    isOpenAICompatibleProvider(providerId) ||
+    isAnthropicCompatibleProvider(providerId)
+  );
+}
+
+// ── System Providers (virtual, not user-connectable) ──────────────────────────
+export const SYSTEM_PROVIDERS = {
+  auto: {
+    id: "auto",
+    alias: "auto",
+    name: "Auto (Zero-Config)",
+    icon: "auto_awesome",
+    color: "#6366F1",
+    textIcon: "Auto",
+    systemOnly: true,
+    description: "Zero-config auto-routing with LKGP across all connected providers",
+  },
+};
+
 // All providers (combined)
 export const AI_PROVIDERS = {
   ...FREE_PROVIDERS,
@@ -1890,6 +2042,8 @@ export const AI_PROVIDERS = {
   ...SEARCH_PROVIDERS,
   ...AUDIO_ONLY_PROVIDERS,
   ...UPSTREAM_PROXY_PROVIDERS,
+  ...CLOUD_AGENT_PROVIDERS,
+  ...SYSTEM_PROVIDERS, // <-- system providers included
 };
 
 export type AiProviderId = keyof typeof AI_PROVIDERS;
@@ -1946,9 +2100,11 @@ export const USAGE_SUPPORTED_PROVIDERS = [
   "github",
   "codex",
   "claude",
+  "cursor",
   "kimi-coding",
   "glm",
   "glm-cn",
+  "zai",
   "glmt",
   "minimax",
   "minimax-cn",
@@ -1968,3 +2124,4 @@ validateProviders(LOCAL_PROVIDERS, "LOCAL_PROVIDERS");
 validateProviders(SEARCH_PROVIDERS, "SEARCH_PROVIDERS");
 validateProviders(AUDIO_ONLY_PROVIDERS, "AUDIO_ONLY_PROVIDERS");
 validateProviders(UPSTREAM_PROXY_PROVIDERS, "UPSTREAM_PROXY_PROVIDERS");
+validateProviders(CLOUD_AGENT_PROVIDERS, "CLOUD_AGENT_PROVIDERS");

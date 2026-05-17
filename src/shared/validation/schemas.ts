@@ -6,7 +6,7 @@ import {
 import { SUPPORTED_BATCH_ENDPOINTS } from "@/shared/constants/batchEndpoints";
 import { MAX_REQUEST_BODY_LIMIT_MB, MIN_REQUEST_BODY_LIMIT_MB } from "@/shared/constants/bodySize";
 import { COMBO_CONFIG_MODES } from "@/shared/constants/comboConfigMode";
-import { isLocalProvider } from "@/shared/constants/providers";
+import { providerAllowsOptionalApiKey } from "@/shared/constants/providers";
 import { HIDEABLE_SIDEBAR_ITEM_IDS } from "@/shared/constants/sidebarVisibility";
 import { isForbiddenUpstreamHeaderName } from "@/shared/constants/upstreamHeaders";
 
@@ -259,10 +259,7 @@ export const createProviderSchema = z
   })
   .superRefine((data, ctx) => {
     const apiKey = typeof data.apiKey === "string" ? data.apiKey.trim() : "";
-    const apiKeyOptional =
-      data.provider === "searxng-search" ||
-      data.provider === "petals" ||
-      isLocalProvider(data.provider);
+    const apiKeyOptional = providerAllowsOptionalApiKey(data.provider);
     if (!apiKeyOptional && apiKey.length === 0) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -775,6 +772,11 @@ const connectionCooldownProfileSchema = z
   .object({
     baseCooldownMs: z.number().int().min(0).optional(),
     useUpstreamRetryHints: z.boolean().optional(),
+    // Issue #2100 follow-up: per-profile toggle for upstream 429 hint trust.
+    // `null` is an explicit unset sentinel — PATCH handler deletes the key
+    // from stored settings so the per-provider default resolves at runtime.
+    // `undefined` (key omitted) means "leave existing value unchanged".
+    useUpstream429BreakerHints: z.boolean().nullable().optional(),
     maxBackoffSteps: z.number().int().min(0).optional(),
   })
   .strict();
@@ -1264,6 +1266,12 @@ export const oauthPollSchema = z.object({
   extraData: z.unknown().optional(),
 });
 
+/** Import a raw API token (e.g. WINDSURF_API_KEY) without going through the browser OAuth flow. */
+export const oauthImportTokenSchema = z.object({
+  token: z.string().trim().min(1, "Token is required"),
+  connectionId: z.string().optional(),
+});
+
 export const cursorImportSchema = z.object({
   accessToken: z.string().trim().min(1, "Access token is required"),
   machineId: z.string().trim().optional(),
@@ -1581,6 +1589,23 @@ export const updateProviderConnectionSchema = z
     healthCheckInterval: z.coerce.number().int().min(0).optional(),
     group: z.union([z.string().max(100), z.null()]).optional(),
     maxConcurrent: z.union([z.null(), z.coerce.number().int().min(0)]).optional(),
+    // Per-window quota cutoffs. Map keys are window names (e.g. "window5h",
+    // "window7d"); values are 0-100 integers, or null to clear that window's
+    // override (the API route merges this into the existing map and prunes
+    // null entries before persisting). The whole field set to null clears
+    // every override on the connection.
+    quotaWindowThresholds: z
+      .union([
+        z.null(),
+        z.record(
+          // Window keys mirror the quota names from getUsageForProvider —
+          // bound for defense-in-depth so a malicious payload can't ship
+          // megabyte-long keys that would bloat the DB row.
+          z.string().min(1).max(64),
+          z.union([z.null(), z.coerce.number().int().min(0).max(100)])
+        ),
+      ])
+      .optional(),
     projectId: z.union([z.string(), z.null()]).optional(),
     // Partial patch of per-connection provider-specific settings (e.g. quota toggles)
     providerSpecificData: z
@@ -1614,6 +1639,7 @@ export const providersBatchTestSchema = z
       "audio",
       "local",
       "upstream-proxy",
+      "cloud-agent",
     ]),
     // Frontend may send null when mode != 'provider' — accept and treat as missing
     providerId: z.string().trim().min(1).nullable().optional(),
@@ -1792,9 +1818,11 @@ export const v1SearchSchema = z
         "tavily-search",
         "google-pse-search",
         "linkup-search",
+        "ollama-search",
         "searchapi-search",
         "youcom-search",
         "searxng-search",
+        "zai-search",
       ])
       .optional(),
     max_results: z.coerce.number().int().min(1).max(100).default(5),
