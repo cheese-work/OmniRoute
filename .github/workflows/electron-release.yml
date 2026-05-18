@@ -19,7 +19,7 @@ permissions:
 jobs:
   validate:
     name: Validate version
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     outputs:
       version: ${{ steps.validate.outputs.version }}
     steps:
@@ -61,7 +61,7 @@ jobs:
             target: mac-arm64
             ext: -arm64.dmg
           - platform: linux
-            runner: blacksmith-4vcpu-ubuntu-2404
+            runner: [self-hosted, linux]
             target: linux
             ext: .AppImage
             deb_ext: .deb
@@ -179,7 +179,7 @@ jobs:
   release:
     name: Create Release
     needs: [validate, build]
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
