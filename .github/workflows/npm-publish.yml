@@ -42,7 +42,7 @@ env:
 
 jobs:
   publish:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     environment: NPM_TOKEN
     steps:
       - name: Checkout

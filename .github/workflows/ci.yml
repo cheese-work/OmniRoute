@@ -23,7 +23,7 @@ env:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -43,7 +43,7 @@ jobs:
 
   docs-sync-strict:
     name: Docs Sync (Strict)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -57,7 +57,7 @@ jobs:
 
   i18n-ui-coverage:
     name: i18n UI Coverage
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -69,7 +69,7 @@ jobs:
 
   i18n-matrix:
     name: Build language matrix
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     outputs:
       langs: ${{ steps.langs.outputs.langs }}
     steps:
@@ -82,7 +82,7 @@ jobs:
 
   i18n:
     name: i18n Validation
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     continue-on-error: true
     strategy:
       fail-fast: false
@@ -109,7 +109,7 @@ jobs:
   pr-test-policy:
     name: PR Test Policy
     if: ${{ github.event_name == 'pull_request' }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -130,7 +130,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -143,7 +143,7 @@ jobs:
 
   package-artifact:
     name: Package Artifact
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     needs: build
     env:
       JWT_SECRET: ci-build-secret-with-sufficient-length-for-validation
@@ -160,7 +160,7 @@ jobs:
 
   electron-package-smoke:
     name: Electron Package Smoke
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     timeout-minutes: 25
     needs: build
     env:
@@ -188,7 +188,7 @@ jobs:
 
   test-unit:
     name: Unit Tests (${{ matrix.shard }}/2)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     timeout-minutes: 15
     needs: build
     strategy:
@@ -211,7 +211,7 @@ jobs:
 
   node-24-compat:
     name: Node 24 Compatibility (${{ matrix.shard }}/2)
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     timeout-minutes: 15
     needs: build
     strategy:
@@ -235,7 +235,7 @@ jobs:
 
   node-26-compat:
     name: Node 26 Compatibility (${{ matrix.shard }}/2)
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     timeout-minutes: 15
     needs: build
     strategy:
@@ -259,7 +259,7 @@ jobs:
 
   test-coverage:
     name: Coverage
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     timeout-minutes: 30
     needs: build
     env:
@@ -306,7 +306,7 @@ jobs:
 
   sonarqube:
     name: SonarQube
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     needs: test-coverage
     if: ${{ always() && needs.test-coverage.result == 'success' }}
     env:
@@ -337,7 +337,7 @@ jobs:
 
   coverage-pr-comment:
     name: PR Coverage Comment
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     if: ${{ always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false }}
     needs:
       - pr-test-policy
@@ -415,7 +415,7 @@ jobs:
 
   test-e2e:
     name: E2E Tests (${{ matrix.shard }}/6)
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     timeout-minutes: 20
     needs: build
     strategy:
@@ -441,7 +441,7 @@ jobs:
 
   test-integration:
     name: Integration Tests (${{ matrix.shard }}/2)
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: [self-hosted, linux]
     timeout-minutes: 15
     needs: build
     strategy:
@@ -466,7 +466,7 @@ jobs:
 
   test-security:
     name: Security Tests
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     needs: build
     env:
       JWT_SECRET: ci-test-secret-with-sufficient-length-for-validation
@@ -484,7 +484,7 @@ jobs:
 
   ci-summary:
     name: CI Dashboard
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     if: always()
     needs:
       - lint
